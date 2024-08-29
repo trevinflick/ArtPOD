@@ -13,7 +13,7 @@ def fetch_art_data(artwork_id=27992):
     response.raise_for_status()  # Check for request errors
     data = response.json()["data"]  # Get the artwork data
 
-    image_url = f"https://www.artic.edu/iiif/2/{data['image_id']}/full/843,/0/default.jpg"
+    image_url = f"https://www.artic.edu/iiif/2/{data['image_id']}/full/600,/0/default.jpg"
     description = data.get("short_description", "No description available")
     artist_display = data.get("artist_display", "No artist information available")
     title = data.get("title", "No title available")

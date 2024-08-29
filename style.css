@@ -21,7 +21,7 @@
     background-color: #f9f9f9; /* Light background for text */
     border-radius: 5px; /* Rounded corners */
     width: 80%; /* Limit width to prevent stretching */
-    max-width: 1000px; /* Maximum width for readability */
+    max-width: 600px; /* Maximum width for readability */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
     text-align: left; /* Align text to the left */
     margin-left: auto; /* Center the container horizontally */
@@ -58,7 +58,7 @@
   }
   
   /* Ensure image and text remain responsive */
-  @media (max-width: 768px) {
+  @media (max-width: 600px) {
     .art-details {
       width: 95%; /* Wider text container on small screens */
       max-width: none; /* Remove max width constraint */
