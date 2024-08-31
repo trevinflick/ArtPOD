@@ -54,6 +54,17 @@ app_ui = shiny.ui.page_fluid(
             class_="art-details"
         ),
         style="text-align: center;"  # Ensure the text box itself is centered
+    ),
+
+    # Footer for API acknowledgment
+    shiny.ui.div(
+        shiny.ui.tags.hr(),
+        shiny.ui.tags.p(
+            "Image and data provided by ",
+            shiny.ui.tags.a("The Art Institute of Chicago API", href="http://api.artic.edu/docs/#introduction", target="_blank"),
+            "."
+        ),
+        style="text-align: center; font-size: small; color: gray;"
     )
 )
 
