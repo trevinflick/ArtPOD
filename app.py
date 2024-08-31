@@ -15,8 +15,9 @@ def fetch_art_data_from_github():
     description = data.get("description", "No description available")
     artist_display = data.get("artist_info", "No artist information available")
     title = data.get("title", "No title available")
+    alt_text = data.get("alt_text", "No alternative text available")  # Fetch alt_text field
     
-    return image_url, description, artist_display, title
+    return image_url, description, artist_display, title, alt_text
 
 
 # UI
@@ -55,16 +56,15 @@ app_ui = shiny.ui.page_fluid(
         ),
         style="text-align: center;"  # Ensure the text box itself is centered
     ),
-
-    # Footer for API acknowledgment
+    
+    # Add a footnote or caption acknowledging the Art Institute of Chicago API
     shiny.ui.div(
-        shiny.ui.tags.hr(),
         shiny.ui.tags.p(
-            "Image and data provided by ",
+            "Data provided by ",
             shiny.ui.tags.a("The Art Institute of Chicago API", href="http://api.artic.edu/docs/#introduction", target="_blank"),
-            "."
+            class_="caption"
         ),
-        style="text-align: center; font-size: small; color: gray;"
+        style="text-align: center;"
     )
 )
 
@@ -73,7 +73,10 @@ def server(input, output, session):
     @output
     @shiny.render.image
     def art_image():
-        image_url, _, _, _ = fetch_art_data_from_github()
+        image_url, description, _, _, alt_text = fetch_art_data_from_github()
+        
+        # Determine the hover text
+        hover_text = alt_text if alt_text != "No alternative text available" else description
         
         # Download the image to a temporary file
         temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".jpg")
@@ -85,10 +88,11 @@ def server(input, output, session):
             temp_file.write(response.content)
             temp_file.close()
             
-            # Return the local path to the downloaded image
+            # Return the local path to the downloaded image with the hover text
             return {
                 'src': temp_file_name,
-                'alt': "Art Image"
+                'alt': "Art Image",
+                'title': hover_text  # Add the hover text here
             }
         except Exception as e:
             temp_file.close()
@@ -98,19 +102,19 @@ def server(input, output, session):
     @output
     @shiny.render.text
     def description():
-        _, description, _, _ = fetch_art_data_from_github()
+        _, description, _, _, _ = fetch_art_data_from_github()
         return description
     
     @output
     @shiny.render.ui()
     def artist_name():
-        _, _, artist_info, _ = fetch_art_data_from_github()
+        _, _, artist_info, _, _ = fetch_art_data_from_github()
         return shiny.ui.HTML(artist_info)
     
     @output
     @shiny.render.text
     def title():
-        _, _, _, title = fetch_art_data_from_github()
+        _, _, _, title, _ = fetch_art_data_from_github()
         return title
 
 # Shiny app
