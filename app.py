@@ -57,11 +57,17 @@ app_ui = shiny.ui.page_fluid(
         style="text-align: center;"  # Ensure the text box itself is centered
     ),
     
-    # Add a footnote or caption acknowledging the Art Institute of Chicago API
+     # Add a footnote or caption with multiple lines
     shiny.ui.div(
         shiny.ui.tags.p(
             "Data provided by ",
             shiny.ui.tags.a("The Art Institute of Chicago API", href="http://api.artic.edu/docs/#introduction", target="_blank"),
+            shiny.ui.tags.br(),  # Line break
+            "App inspired by ",
+            shiny.ui.tags.a("Astronomy Picture of the Day", href="https://apod.nasa.gov/apod/astropix.html", target="_blank"),
+            shiny.ui.tags.br(),  # Line break
+            "and powered by ",
+            shiny.ui.tags.a("Shiny", href="https://shiny.posit.co/", target="_blank"),
             class_="caption"
         ),
         style="text-align: center;"
