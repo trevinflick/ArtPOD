@@ -49,7 +49,7 @@ app_ui = shiny.ui.page_fluid(
                 class_="artist-name"  # Apply artist name class
             ),
             shiny.ui.div(
-                shiny.ui.output_text("description"),
+                shiny.ui.output_ui("description"),
                 class_="description"
             ),
             class_="art-details"
@@ -110,10 +110,10 @@ def server(input, output, session):
             raise e
 
     @output
-    @shiny.render.text
+    @shiny.render.ui
     def description():
         _, description, _, _, _ = fetch_art_data_from_github()
-        return description
+        return shiny.ui.HTML(description)
     
     @output
     @shiny.render.ui()
