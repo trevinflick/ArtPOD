@@ -1,71 +1,74 @@
 /* General container styling */
 .container-fluid {
-    text-align: center;
-    height: calc(100vh - 30px);
-    display: grid;
-    grid-template-rows: auto 1fr auto; /* Layout for header, content, and footer */
-    justify-items: center; /* Center elements horizontally */
-  }
-  
-  /* Image styling */
-  .art-image {
-    max-width: 100%; /* Responsive image scaling */
-    height: auto; /* Maintain aspect ratio */
-    margin: 20px 0; /* Spacing around the image */
-  }
-  
-  /* Text container styling */
-  .art-details {
-    margin-top: 20px; /* Space between the image and text */
-    padding: 15px; /* Padding for text container */
-    background-color: #f9f9f9; /* Light background for text */
-    border-radius: 5px; /* Rounded corners */
-    width: 80%; /* Limit width to prevent stretching */
-    max-width: 600px; /* Maximum width for readability */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-    text-align: left; /* Align text to the left */
-    margin-left: auto; /* Center the container horizontally */
-    margin-right: auto; /* Center the container horizontally */
-  }
-  
-  /* Individual text styling */
-  .art-details > div {
-    margin-bottom: 10px; /* Spacing between text elements */
-    font-family: Arial, sans-serif; /* Font styling */
-    font-size: 12px; /* Text size */
-    line-height: 1.5; /* Line height for readability */
-  }
+  text-align: center;
+  height: calc(100vh - 30px);
+  display: grid;
+  grid-template-rows: auto 1fr auto; /* Layout for header, content, and footer */
+  justify-items: center; /* Center elements horizontally */
+}
 
-  /* Title styling */
+/* Image container styling */
+.art-image {
+  text-align: center; /* Center image within the container */
+}
+
+/* Ensure the image is responsive */
+.art-image img {
+  max-width: 100%;
+  height: auto; /* Maintain aspect ratio */
+}
+
+/* Text container styling */
+.art-details {
+  margin-top: 20px; /* Space between the image and text */
+  padding: 15px; /* Padding for text container */
+  background-color: #f9f9f9; /* Light background for text */
+  border-radius: 5px; /* Rounded corners */
+  width: 80%; /* Limit width to prevent stretching */
+  max-width: 600px; /* Maximum width for readability */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  text-align: left; /* Align text to the left */
+  margin-left: auto; /* Center the container horizontally */
+  margin-right: auto; /* Center the container horizontally */
+}
+
+/* Individual text styling */
+.art-details > div {
+  margin-bottom: 10px; /* Spacing between text elements */
+  font-family: Arial, sans-serif; /* Font styling */
+  font-size: 12px; /* Text size */
+  line-height: 1.5; /* Line height for readability */
+}
+
+/* Title styling */
 .art-details .title {
-    font-size: 24px; /* Larger font size for title */
-    font-weight: bold; /* Make title bold */
-    margin-bottom: 10px; /* Space below the title */
+  font-size: 24px; /* Larger font size for title */
+  font-weight: bold; /* Make title bold */
+  margin-bottom: 10px; /* Space below the title */
 }
 
 /* Artist name styling */
 .art-details .artist-name {
-    font-size: 18px; /* Larger font size for artist name */
-    font-weight: bold; /* Make artist name bold */
-    margin-bottom: 10px; /* Space below the artist name */
+  font-size: 18px; /* Larger font size for artist name */
+  font-weight: bold; /* Make artist name bold */
+  margin-bottom: 10px; /* Space below the artist name */
 }
-  
-  /* Header styling */
-  h2 {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Font styling */
-    font-size: 28px; /* Font size */
-    margin-bottom: 20px; /* Space below the header */
-  }
-  
-  /* Ensure image and text remain responsive */
-  @media (max-width: 600px) {
-    .art-details {
+
+/* Header styling */
+h2 {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Font styling */
+  font-size: 28px; /* Font size */
+  margin-bottom: 20px; /* Space below the header */
+}
+
+/* Ensure image and text remain responsive */
+@media (max-width: 600px) {
+  .art-details {
       width: 95%; /* Wider text container on small screens */
       max-width: none; /* Remove max width constraint */
-    }
-  
-    .art-image {
-      width: 90%; /* Adjust image size for smaller screens */
-    }
   }
-  
+
+  .art-image {
+      width: 90%; /* Adjust image size for smaller screens */
+  }
+}

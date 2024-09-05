@@ -9,15 +9,26 @@ def fetch_art_data_from_github():
     response = requests.get(github_url)
     response.raise_for_status()  # Check for request errors
     data = response.json()  # Parse the JSON data
-
-    # Extract data from JSON
-    image_url = data.get("image_url", "No image available")
+    
+    # Make sure to call .get() on the 'data' dictionary, not a Shiny tag
+    image_id = data.get("image_id", None)  # Assuming image_id is available
+    if image_id:
+        image_url_small = f"https://www.artic.edu/iiif/2/{image_id}/full/200,/0/default.jpg"
+        image_url_medium = f"https://www.artic.edu/iiif/2/{image_id}/full/400,/0/default.jpg"
+        image_url_large = f"https://www.artic.edu/iiif/2/{image_id}/full/800,/0/default.jpg"
+        image_url_full = f"https://www.artic.edu/iiif/2/{image_id}/full/full/0/default.jpg"
+    else:
+        image_url_small = image_url_medium = image_url_large = image_url_full = "No image available"
+    
     description = data.get("description", "No description available")
     artist_display = data.get("artist_info", "No artist information available")
     title = data.get("title", "No title available")
-    alt_text = data.get("alt_text", "No alternative text available")  # Fetch alt_text field
+    alt_text = data.get("alt_text", "No alternative text available")
     
-    return image_url, description, artist_display, title, alt_text
+    # Return all 8 values
+    return image_url_small, image_url_medium, image_url_large, image_url_full, description, artist_display, title, alt_text
+
+
 
 
 # UI
@@ -25,6 +36,29 @@ app_ui = shiny.ui.page_fluid(
     shiny.ui.head_content(
         shiny.ui.tags.meta(name="viewport", content="width=device-width, initial-scale=1.0"),
         shiny.ui.tags.style((Path(__file__).parent / "style.css").read_text()),
+        shiny.ui.tags.script("""
+            function updateImageSrc() {
+            var img = document.querySelector('.responsive-image');
+            if (img) {
+                var screenWidth = window.innerWidth;
+                console.log('Viewport width:', screenWidth);
+                var src = img.getAttribute('data-small'); // Default to small size
+                if (screenWidth >= 1024) {
+                    src = img.getAttribute('data-large');
+                } else if (screenWidth >= 600) {
+                    src = img.getAttribute('data-medium');
+                }
+                console.log('Image source:', src);
+                img.src = src;
+            }
+        }
+
+            // Initial update on load
+            window.addEventListener('load', updateImageSrc);
+
+            // Update when the window is resized
+            window.addEventListener('resize', updateImageSrc);
+        """)
     ),
     shiny.ui.h2("Art Picture of the Day"),
     
@@ -83,48 +117,72 @@ def server(input, output, session):
     @output
     @shiny.render.image
     def art_image():
-        image_url, description, _, _, alt_text = fetch_art_data_from_github()
-        
-        # Determine the hover text
+        # Make sure to unpack all 8 values
+        image_url_small, image_url_medium, image_url_large, image_url_full, description, artist_info, title, alt_text = fetch_art_data_from_github()
+
         hover_text = alt_text if alt_text != "No alternative text available" else description
-        
-        # Download the image to a temporary file
-        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".jpg")
-        temp_file_name = temp_file.name
-        
+
+        # Create temporary files for each image size
+        temp_file_small = tempfile.NamedTemporaryFile(delete=False, suffix=".jpg")
+        temp_file_medium = tempfile.NamedTemporaryFile(delete=False, suffix=".jpg")
+        temp_file_large = tempfile.NamedTemporaryFile(delete=False, suffix=".jpg")
+        temp_file_full = tempfile.NamedTemporaryFile(delete=False, suffix=".jpg")
+
         try:
-            response = requests.get(image_url)
-            response.raise_for_status()
-            temp_file.write(response.content)
-            temp_file.close()
-            
-            # Return the local path to the downloaded image with the hover text
+            # Download images for each size
+            response_small = requests.get(image_url_small)
+            response_small.raise_for_status()
+            temp_file_small.write(response_small.content)
+
+            response_medium = requests.get(image_url_medium)
+            response_medium.raise_for_status()
+            temp_file_medium.write(response_medium.content)
+
+            response_large = requests.get(image_url_large)
+            response_large.raise_for_status()
+            temp_file_large.write(response_large.content)
+
+            response_full = requests.get(image_url_full)
+            response_full.raise_for_status()
+            temp_file_full.write(response_full.content)
+
+            # Return the image tag with multiple sizes
             return {
-                'src': temp_file_name,
+                'src': temp_file_small.name,  # Default to the small image
                 'alt': "Art Image",
-                'title': hover_text  # Add the hover text here
+                'title': hover_text,  # Tooltip (hover text)
+                'class': "responsive-image",
+                'width': "100%",  # Ensure responsiveness
+                # Pass image paths for different sizes as data attributes
+                'data-small': temp_file_small.name,
+                'data-medium': temp_file_medium.name,
+                'data-large': temp_file_large.name,
+                'data-full': temp_file_full.name
             }
+
         except Exception as e:
-            temp_file.close()
-            os.remove(temp_file_name)
+            temp_file_small.close()
+            temp_file_medium.close()
+            temp_file_large.close()
+            temp_file_full.close()
             raise e
 
     @output
     @shiny.render.ui
     def description():
-        _, description, _, _, _ = fetch_art_data_from_github()
+        _, _, _, _, description, _, _, _ = fetch_art_data_from_github()
         return shiny.ui.HTML(description)
     
     @output
     @shiny.render.ui()
     def artist_name():
-        _, _, artist_info, _, _ = fetch_art_data_from_github()
+        _, _, _, _, _, artist_info, _, _ = fetch_art_data_from_github()
         return shiny.ui.HTML(artist_info)
     
     @output
     @shiny.render.text
     def title():
-        _, _, _, title, _ = fetch_art_data_from_github()
+        _, _, _, _, _, _, title, _ = fetch_art_data_from_github()
         return title
 
 # Shiny app
