@@ -1,74 +1,93 @@
-/* General container styling */
-.container-fluid {
+/* General styling */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Arial, sans-serif;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+h2 {
   text-align: center;
-  height: calc(100vh - 30px);
-  display: grid;
-  grid-template-rows: auto 1fr auto; /* Layout for header, content, and footer */
-  justify-items: center; /* Center elements horizontally */
+  margin-bottom: 20px;
 }
 
-/* Image container styling */
-.art-image {
-  text-align: center; /* Center image within the container */
+.content-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
 }
 
-/* Ensure the image is responsive */
-.art-image img {
+/* Image styling */
+.art-image-container {
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: 20px;
+}
+
+.art-image-container img {
   max-width: 100%;
-  height: auto; /* Maintain aspect ratio */
+  height: auto;
+  display: block;
 }
 
 /* Text container styling */
 .art-details {
-  margin-top: 20px; /* Space between the image and text */
-  padding: 15px; /* Padding for text container */
-  background-color: #f9f9f9; /* Light background for text */
-  border-radius: 5px; /* Rounded corners */
-  width: 80%; /* Limit width to prevent stretching */
-  max-width: 600px; /* Maximum width for readability */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-  text-align: left; /* Align text to the left */
-  margin-left: auto; /* Center the container horizontally */
-  margin-right: auto; /* Center the container horizontally */
+  width: 100%;
+  max-width: 600px;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
 }
 
-/* Individual text styling */
-.art-details > div {
-  margin-bottom: 10px; /* Spacing between text elements */
-  font-family: Arial, sans-serif; /* Font styling */
-  font-size: 12px; /* Text size */
-  line-height: 1.5; /* Line height for readability */
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
-/* Title styling */
-.art-details .title {
-  font-size: 24px; /* Larger font size for title */
-  font-weight: bold; /* Make title bold */
-  margin-bottom: 10px; /* Space below the title */
+.artist-name {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
-/* Artist name styling */
-.art-details .artist-name {
-  font-size: 18px; /* Larger font size for artist name */
-  font-weight: bold; /* Make artist name bold */
-  margin-bottom: 10px; /* Space below the artist name */
+.description {
+  font-size: 14px;
+  line-height: 1.5;
 }
 
-/* Header styling */
-h2 {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Font styling */
-  font-size: 28px; /* Font size */
-  margin-bottom: 20px; /* Space below the header */
+/* Caption styling */
+.caption {
+  text-align: center;
+  font-size: 12px;
+  margin-top: auto;
 }
 
-/* Ensure image and text remain responsive */
-@media (max-width: 600px) {
-  .art-details {
-      width: 95%; /* Wider text container on small screens */
-      max-width: none; /* Remove max width constraint */
+/* Responsive design */
+@media (min-width: 768px) {
+  .content-container {
+      flex-direction: row;
+      justify-content: center;
+      align-items: flex-start;
   }
 
-  .art-image {
-      width: 90%; /* Adjust image size for smaller screens */
+  .art-image-container {
+      flex: 0 0 60%;
+      margin-right: 20px;
+  }
+
+  .art-details {
+      flex: 0 0 40%;
   }
 }

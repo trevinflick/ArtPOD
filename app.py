@@ -35,80 +35,52 @@ def fetch_art_data_from_github():
 app_ui = shiny.ui.page_fluid(
     shiny.ui.head_content(
         shiny.ui.tags.meta(name="viewport", content="width=device-width, initial-scale=1.0"),
-        shiny.ui.tags.style((Path(__file__).parent / "style.css").read_text()),
-        shiny.ui.tags.script("""
-            function updateImageSrc() {
-            var img = document.querySelector('.responsive-image');
-            if (img) {
-                var screenWidth = window.innerWidth;
-                console.log('Viewport width:', screenWidth);
-                var src = img.getAttribute('data-small'); // Default to small size
-                if (screenWidth >= 1024) {
-                    src = img.getAttribute('data-large');
-                } else if (screenWidth >= 600) {
-                    src = img.getAttribute('data-medium');
-                }
-                console.log('Image source:', src);
-                img.src = src;
-            }
-        }
-
-            // Initial update on load
-            window.addEventListener('load', updateImageSrc);
-
-            // Update when the window is resized
-            window.addEventListener('resize', updateImageSrc);
-        """)
+        shiny.ui.tags.style((Path(__file__).parent / "style.css").read_text())
     ),
-    shiny.ui.h2("Art Picture of the Day"),
-    
-    # Row for the image
-    shiny.ui.row(
-        shiny.ui.column(12,  # Full-width column for the image
-            shiny.ui.output_image("art_image"),
-            class_="art-image",
-            style="text-align: center;"
-        )
-    ),
+    shiny.ui.div(
+        shiny.ui.h2("Art Picture of the Day"),
+        
+        # Container for image and text
+        shiny.ui.div(
+            # Image container
+            shiny.ui.div(
+                shiny.ui.output_image("art_image"),
+                class_="art-image-container"
+            ),
 
-    # Row for the text information
-    shiny.ui.row(
-        shiny.ui.column(12,  # Full-width column for the text
+            # Text information container
             shiny.ui.div(
-                shiny.ui.output_text("title"),
-                class_="title"  # Apply title class
-            ),
-            shiny.ui.div(
-                shiny.ui.output_ui("artist_name"),
-                class_="artist-name"  # Apply artist name class
-            ),
-            shiny.ui.div(
-                shiny.ui.output_ui("description"),
-                class_="description"
-            ),
-            class_="art-details"
-        ),
-        style="text-align: center;"  # Ensure the text box itself is centered
-    ),
-    
-    # Row for the caption and links
-    shiny.ui.row(
-        shiny.ui.column(12,  # Full-width column for the caption
-            shiny.ui.div(
-                shiny.ui.HTML(
-                    """
-                    <p>
-                        Inspired by Astronomy Picture of the Day: <a href="https://apod.nasa.gov/apod/astropix.html" target="_blank">APOD</a><br>
-                        Powered by <a href="https://shiny.posit.co/" target="_blank">Shiny</a><br>
-                        Check out the source code on <a href="https://github.com/trevinflick/" target="_blank">GitHub</a><br>
-                        Follow the bot on <a href="https://bsky.app/profile/artpod.bsky.social" target="_blank">Bluesky</a>
-                    </p>
-                    """
+                shiny.ui.div(
+                    shiny.ui.output_text("title"),
+                    class_="title"
                 ),
-                class_="caption"  # Apply caption class
+                shiny.ui.div(
+                    shiny.ui.output_ui("artist_name"),
+                    class_="artist-name"
+                ),
+                shiny.ui.div(
+                    shiny.ui.output_ui("description"),
+                    class_="description"
+                ),
+                class_="art-details"
             ),
-            style="text-align: center;"
-        )
+            class_="content-container"
+        ),
+        
+        shiny.ui.div(
+            shiny.ui.HTML(
+                """
+                <p>
+                    Inspired by Astronomy Picture of the Day: <a href="https://apod.nasa.gov/apod/astropix.html" target="_blank">APOD</a><br>
+                    Powered by <a href="https://shiny.posit.co/" target="_blank">Shiny</a><br>
+                    Check out the source code on <a href="https://github.com/trevinflick/" target="_blank">GitHub</a><br>
+                    Follow the bot on <a href="https://bsky.app/profile/artpod.bsky.social" target="_blank">Bluesky</a>
+                </p>
+                """
+            ),
+            class_="caption"
+        ),
+        class_="main-container"
     )
 )
 
@@ -117,55 +89,24 @@ def server(input, output, session):
     @output
     @shiny.render.image
     def art_image():
-        # Make sure to unpack all 8 values
         image_url_small, image_url_medium, image_url_large, image_url_full, description, artist_info, title, alt_text = fetch_art_data_from_github()
 
-        hover_text = alt_text if alt_text != "No alternative text available" else description
+        # Download the image
+        response = requests.get(image_url_full)
+        response.raise_for_status()
+        
+        # Save the image to a temporary file
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as temp_file:
+            temp_file.write(response.content)
+            temp_file_path = temp_file.name
+        
+        # Return the image details for rendering
+        return {
+            'src': temp_file_path,
+            'alt': alt_text if alt_text != "No alternative text available" else "Art Image",
+            'style': "max-width: 100%; height: auto;"
+        }
 
-        # Create temporary files for each image size
-        temp_file_small = tempfile.NamedTemporaryFile(delete=False, suffix=".jpg")
-        temp_file_medium = tempfile.NamedTemporaryFile(delete=False, suffix=".jpg")
-        temp_file_large = tempfile.NamedTemporaryFile(delete=False, suffix=".jpg")
-        temp_file_full = tempfile.NamedTemporaryFile(delete=False, suffix=".jpg")
-
-        try:
-            # Download images for each size
-            response_small = requests.get(image_url_small)
-            response_small.raise_for_status()
-            temp_file_small.write(response_small.content)
-
-            response_medium = requests.get(image_url_medium)
-            response_medium.raise_for_status()
-            temp_file_medium.write(response_medium.content)
-
-            response_large = requests.get(image_url_large)
-            response_large.raise_for_status()
-            temp_file_large.write(response_large.content)
-
-            response_full = requests.get(image_url_full)
-            response_full.raise_for_status()
-            temp_file_full.write(response_full.content)
-
-            # Return the image tag with multiple sizes
-            return {
-                'src': temp_file_small.name,  # Default to the small image
-                'alt': "Art Image",
-                'title': hover_text,  # Tooltip (hover text)
-                'class': "responsive-image",
-                'width': "100%",  # Ensure responsiveness
-                # Pass image paths for different sizes as data attributes
-                'data-small': temp_file_small.name,
-                'data-medium': temp_file_medium.name,
-                'data-large': temp_file_large.name,
-                'data-full': temp_file_full.name
-            }
-
-        except Exception as e:
-            temp_file_small.close()
-            temp_file_medium.close()
-            temp_file_large.close()
-            temp_file_full.close()
-            raise e
 
     @output
     @shiny.render.ui
