@@ -2,23 +2,30 @@
 body, html {
   margin: 0;
   padding: 0;
-  height: 100%;
+  height: auto;
   font-family: Arial, sans-serif;
+  overflow-y: scroll;
 }
 
+/* Main container for the entire app */
 .main-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
   padding: 20px;
   box-sizing: border-box;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
+/* Header styling */
 h2 {
   text-align: center;
   margin-bottom: 20px;
 }
 
+/* Content container that holds the image and text */
 .content-container {
   display: flex;
   flex-direction: column;
@@ -26,16 +33,22 @@ h2 {
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
+  padding-bottom: 20px;
 }
 
 /* Image styling */
 .art-image-container {
   width: 100%;
   margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .art-image-container img {
-  width: 100%;
+  max-width: 100%;
+  max-height: 800px;
+  width: auto;
   height: auto;
   display: block;
 }
@@ -43,12 +56,11 @@ h2 {
 /* Text container styling */
 .art-details {
   width: 100%;
-  padding: 15px;
   background-color: #f9f9f9;
-  border-radius: 5px;
+  padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
   box-sizing: border-box;
+  margin-top: 400px;
 }
 
 .title {
@@ -72,7 +84,7 @@ h2 {
 .caption {
   text-align: center;
   font-size: 12px;
-  margin-top: auto;
+  margin-top: 20px;
   width: 100%;
   max-width: 800px;
   margin-left: auto;

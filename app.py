@@ -104,7 +104,7 @@ def server(input, output, session):
         return {
             'src': temp_file_path,
             'alt': alt_text if alt_text != "No alternative text available" else "Art Image",
-            'style': "max-width: 100%; height: auto;"
+            'style': "max-width: 100%; max-height: 800px; width: auto; height: auto;"
         }
 
 
