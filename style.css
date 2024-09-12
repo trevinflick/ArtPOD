@@ -60,7 +60,7 @@ h2 {
   padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
-  margin-top: 400px;
+  margin-top: 400px; /* Adjust this as needed for desktop */
 }
 
 .title {
@@ -89,4 +89,32 @@ h2 {
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
+}
+
+/* Mobile adjustments for screens less than 600px */
+@media (max-width: 600px) {
+  .art-details {
+  width: 100%;
+  background-color: #f9f9f9;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  margin-top: 10px; /* Adjust this as needed for mobile */
+  }
+
+/* Image container styling */
+.art-image-container {
+  width: 100%;
+  margin-bottom: 20px; /* Space between image and text */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto; /* Dynamically adjust height based on the image */
+}
+
+.art-image-container img {
+  max-width: 100%;
+  height: auto; /* Ensure the image scales correctly */
+  display: block;
+}
 }
