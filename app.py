@@ -91,6 +91,9 @@ def server(input, output, session):
     def art_image():
         image_url_small, image_url_medium, image_url_large, image_url_full, description, artist_info, title, alt_text = fetch_art_data_from_github()
 
+        # Use description as hover text if alt_text is not available
+        hover_text = alt_text if alt_text != "No alternative text available" else description
+
         # Download the image
         response = requests.get(image_url_full)
         response.raise_for_status()
@@ -103,7 +106,8 @@ def server(input, output, session):
         # Return the image details for rendering
         return {
             'src': temp_file_path,
-            'alt': alt_text if alt_text != "No alternative text available" else "Art Image",
+            'alt': hover_text,
+            'title': hover_text,
             'style': "max-width: 100%; max-height: 800px; width: auto; height: auto;"
         }
 
